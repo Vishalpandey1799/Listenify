@@ -80,7 +80,7 @@ export const login = async (req, res) => {
     generateToken(res, user._id);
     
     
-    let {password , ...rest} = user.toObject()
+    let {password , coupon , ...rest} = user.toObject()
 
     return successThrow(res, 200, "User logged in successfully", rest);
   } catch (err) {
