@@ -113,7 +113,7 @@ const LoginPage = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600"></div>
               <div className="relative z-10 flex items-center justify-center space-x-2">
                 {loading ? (
-                  <span>
+                  <span className="flex items-center justify-center"> 
                     <Loader className="animate-spin w- h-5" />
                     Processing...
                   </span>

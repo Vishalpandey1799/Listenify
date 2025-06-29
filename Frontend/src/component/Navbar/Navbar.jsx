@@ -160,7 +160,9 @@ const Navbar = () => {
 
               <Mic className="w-4 h-4" />
 
-              <span className="font-medium">Live Talk</span>
+              <span className="font-medium">
+                <Link to="/live-talk">Live Talk</Link>
+              </span>
             </motion.button>
 
             <a
