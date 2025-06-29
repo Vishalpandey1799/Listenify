@@ -2,7 +2,7 @@
 import axios from "axios"
 import {create} from "zustand";
 
-let baseurl = import.meta.env.VITE_SERVER_URL + "/api/listenify/claim";
+let baseurl = import.meta.env.VITE_SERVER_URL + "api/listenify/claim";
 let coupenInstance = axios.create({
     baseURL : baseurl,
     withCredentials : true
