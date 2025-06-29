@@ -1,15 +1,15 @@
 import express, { urlencoded } from "express"
 import { configDotenv } from "dotenv";
 configDotenv();
-import { connectDB } from "./src/Config/Database.config.js";
+import { connectDB } from "./Config/Database.config.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 
 const app = express();
-import authRoutes from "./src/Routes/Auth.routes.js"
-import audioRoutes from "./src/Routes/Audio.routes.js"
-import talwithAiRoutes from "./src/Routes/TalkAi.routes.js"
-import coupenClaimRoutes from "./src/Routes/Coupen.routes.js"
+import authRoutes from "./Routes/Auth.routes.js"
+import audioRoutes from "./Routes/Audio.routes.js"
+import talwithAiRoutes from "./Routes/TalkAi.routes.js"
+import coupenClaimRoutes from "./Routes/Coupen.routes.js"
 
 
 app.use(express.json())
