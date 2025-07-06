@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: listenify-backend
+    env: node
+    buildCommand: ./build.sh
+    startCommand: npm start
+    envVars:
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: "true"
