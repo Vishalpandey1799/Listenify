@@ -73,7 +73,10 @@ const generateHTML = (mapped) => `
 `;
 
 export const generatePdf = async (questions = []) => {
-  const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
+  const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox' 
+
+     ,'--disable-setuid-sandbox'
+  ] });
   const page = await browser.newPage();
 
   const mapped = questions.map((item) => {
