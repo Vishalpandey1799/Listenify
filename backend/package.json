@@ -2,6 +2,7 @@
   "dependencies": {
     "@google/genai": "^1.6.0",
     "@postlight/mercury-parser": "^2.2.1",
+    "@sparticuz/chromium": "^137.0.1",
     "assemblyai": "^4.13.3",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
