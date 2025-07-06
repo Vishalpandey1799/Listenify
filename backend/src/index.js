@@ -15,7 +15,7 @@ import coupenClaimRoutes from "./Routes/Coupen.routes.js"
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin : "https://listenify-phi.vercel.app/",
+    origin : "https://listenify-phi.vercel.app",
     credentials : true
 }))
 
