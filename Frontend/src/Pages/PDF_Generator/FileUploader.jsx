@@ -91,15 +91,18 @@ const FileUploader = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-slate-900 p-6 mt-10">
+    <div className="min-h-screen bg-slate-900 p-6 mt-15">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-3">
             Upload Documents
           </h2>
           <p className="text-slate-400 text-lg">
-            AI generates comprehensive answers and creates diagrams from your
-            documents
+            Fuck assignments. Upload the damn PDF — get answers and diagrams.
+            Done.
+          </p>
+          <p className="text-slate-400 text-lg">
+            No brain cells wasted. No time lost. Just pure domination.
           </p>
         </div>
 
