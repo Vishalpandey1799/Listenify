@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Volume2, Menu, X, LeafyGreen, Mic, Headphones } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../Apicalls/Auth.api.js";
+import BetaBadge from "../BetaBadge.jsx";
 
 const Navbar = () => {
   const { user, logout, checkingAuth } = useAuthStore();
@@ -53,6 +54,14 @@ const Navbar = () => {
           </motion.div>
 
           <div className="hidden md:flex items-center space-x-6 relative">
+            <div className="relative inline-block">
+              <button className="bg-black text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all">
+                <Link to="/gen-pdf">Assignment</Link>
+              </button>
+              <span className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shadow-md">
+                New
+              </span>
+            </div>
             <motion.button
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.03 }}
@@ -164,6 +173,15 @@ const Navbar = () => {
                 <Link to="/live-talk">Live Talk</Link>
               </span>
             </motion.button>
+
+            <div className="relative inline-block">
+              <button className="bg-black text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all">
+                <Link to="/gen-pdf">Assignment</Link>
+              </button>
+              <span className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shadow-md">
+                New
+              </span>
+            </div>
 
             <a
               href="/about"

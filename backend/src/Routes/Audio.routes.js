@@ -1,6 +1,6 @@
 import express from "express";
 import {authMiddleware} from "../Middleware/AuthMiddleware.js"
-import { contentFromPdf, contentFromUrl , contentFromText, getHelpResponse, latestAudio, getAllAudioandLinks } from "../Controllers/AudioController.js";
+import { contentFromPdf, contentFromUrl , contentFromText, getHelpResponse, latestAudio, getAllAudioandLinks, createPdf } from "../Controllers/AudioController.js";
 import { fileUpload } from "../Config/Multer.js";
 const router = express.Router();
 
@@ -12,6 +12,7 @@ router.post("/text" , authMiddleware , contentFromText);
 router.post("/help" , authMiddleware , getHelpResponse)
 router.get("/latest" , authMiddleware , latestAudio)
 router.get("/all" , authMiddleware , getAllAudioandLinks)
+router.post("/gen" , authMiddleware , fileUpload ,createPdf)
 
 
 

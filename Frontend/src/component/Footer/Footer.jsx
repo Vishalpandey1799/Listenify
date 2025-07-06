@@ -1,5 +1,4 @@
-import { Volume2 } from "lucide-react";
-import { motion } from "framer-motion";
+ 
 import { Link } from "react-router-dom";
 
 function Footer() {
@@ -9,7 +8,7 @@ function Footer() {
     
 
         
-        <div className="pt-8 border-t border-gray-800 text-gray-500 text-center text-sm flex  items-center justify-center gap-5">
+        <div className="pt-8  border-gray-800 text-gray-500 text-center text-sm flex  items-center justify-center gap-5">
           © 2025 Listenify. All rights reserved.
             <Link
             to="/about-dev"

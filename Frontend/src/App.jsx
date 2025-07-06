@@ -21,6 +21,8 @@ import { useCoupenStore } from "./Apicalls/coupen.api.js";
 
 import VoiceInterface from "./component/TalkWithAI/VoiceInterface.jsx";
 
+import FileUploader from "./Pages/PDF_Generator/FileUploader.jsx";
+
 const App = () => {
   const { isAuthenticated, loading, checkingAuth } = useAuthStore();
   const { isClaimed } = useCoupenStore();
@@ -41,7 +43,7 @@ const App = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className=" flex-col min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950 flex ">
       {!hideNavbar && <Navbar />}
 
       <Routes>
@@ -77,6 +79,12 @@ const App = () => {
           path="/live"
           element={
             isAuthenticated ? <CouponClaimBox /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/gen-pdf"
+          element={
+            isAuthenticated ? <FileUploader /> : <Navigate to="/login" />
           }
         />
 

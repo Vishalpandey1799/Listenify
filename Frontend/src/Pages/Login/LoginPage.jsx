@@ -32,7 +32,6 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white overflow-hidden relative">
-      {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-black"></div>
         <div className="absolute inset-0 opacity-20">

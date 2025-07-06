@@ -4,6 +4,7 @@ import { audioInstance } from "../utils/axios.audio.js";
 export const useAudioStore = create((set, get) => ({
   latestAudio: null,
   allAudios: null,
+  currPdf : null,
 
   createWithUrl: async (payload) => {
     try {
@@ -54,6 +55,33 @@ export const useAudioStore = create((set, get) => ({
         success: false,
         message: error?.response?.data?.message,
       };
+    }
+  },
+
+
+  generatePdf : async(file) =>{
+     
+    console.log(file)
+    let formdata = new FormData();
+    formdata.append("file" , file)
+    try{
+      let res = await audioInstance.post("/gen" ,formdata ,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res)
+      return {
+        success : true,
+        data : res?.data?.data
+      }
+    }catch(e){
+        console.log(e)
+
+        return {
+          success : false,
+          data : error?.response?.data?.message
+        }
     }
   },
 

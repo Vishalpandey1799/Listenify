@@ -3,15 +3,20 @@ import {successThrow} from "../Utils/Success.js"
 import {UserModel}  from "../Models/User.model.js"
 import { UrlParser , pdfParser } from "../Utils/Parser.js"
 import axios from "axios"
-import { cloudinary } from "../Config/Cloudinary.config.js"
 import { audioModel } from "../Models/Audio.model.js"
 import { getVoiceCode } from "../Utils/getVoiceCode.js"
 import { uploadFromUrl } from "../Utils/Audiourl.js"
 import { murfAudio } from "../Config/Murfai.js"
 import { main } from "../Config/Gemini.config.js"
+import { docxnpdfparser } from "../Utils/Parser.js"
+import {answerModel} from "../Models/AnswerModel.js"
+import { generatePdf } from "../PDFGenerator.js"
+import { pdfModel } from "../Models/SavedPdf.js"
+import { flattenGeminiMermaid } from "../Utils/Convertomermaid.js"
+import fs from "fs";
  
 
-
+ 
 export const contentFromUrl = async (req, res) => {
   try {
     
@@ -99,9 +104,7 @@ export const contentFromPdf = async(req,res) =>{
        const { language , voice} = req.body;
         let file = req.file;
     
-        if(!req.user){
-            return errorThrow(res , 401 , "Unauthorized")
-        }
+    
         if(!file){
             return errorThrow(res , 400 , "Please upload pdf file");
         }
@@ -297,3 +300,59 @@ export const getAllAudioandLinks = async(req,res) =>{
     return errorThrow(res , 500 , "Internal server error")
   }
 }
+
+
+export const createPdf = async(req,res) =>{
+   try {
+     if(!req.user){
+       return errorThrow(res , 401 , "Unauthorized")
+     }
+    
+     let file = req.file;
+  
+     let {audioCredits} = req?.user;
+
+     if(!audioCredits || audioCredits === 0){
+       return errorThrow(res , 400 , "No credits left")
+     }
+     
+   
+     let data = "";
+
+     if(file.mimetype==="application/pdf"){
+        data = await docxnpdfparser(file,"pdf");
+        console.log(data)
+     }else if(file.mimetype==="application/vnd.openxmlformats-officedocument.wordprocessingml.document"){
+       let final = await docxnpdfparser(file,"docx");
+        data = JSON.stringify(final);
+     }
+
+     let findUser = await UserModel.findById(req.user._id);
+
+     let questions = await main(data,"English" , false , false ,true,false)
+ 
+     let finalAnswer = await main(questions,"English" , false , false ,false,true)
+ 
+    let {url}  = await generatePdf(JSON.parse(finalAnswer))
+
+   
+     let savedPdf = await pdfModel.create({
+       user : req.user._id,
+       pdfUrl : url || null
+     })
+     
+ 
+         findUser.audioCredits -= 2;
+         await findUser.save();
+    
+      
+     return successThrow(res , 200 , "Successfully Created !",savedPdf)
+
+   
+
+   } catch (error) {
+      console.log(error)
+      return errorThrow(res , 500 , "Please Try Again Later!")
+   }
+}
+
