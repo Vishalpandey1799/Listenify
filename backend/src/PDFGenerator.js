@@ -211,16 +211,18 @@ const generateHTML = (mapped) => `
           }
         </div>
 
+      
+      </div>
+    `
+      )
+      .join("\n")}
+
         <Footer>
           <div className="pt-8  border-gray-800 text-gray-500 text-center text-sm flex  items-center justify-center gap-5">
           Thanks for using it (✿◠‿◠) (Lal dil Lal dil)
            
         </div>
         </Footer>
-      </div>
-    `
-      )
-      .join("\n")}
   </body>
 </html>
 `;
