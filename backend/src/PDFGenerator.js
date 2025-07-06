@@ -5,7 +5,7 @@ import { dirname } from 'path';
 import { flattenGeminiMermaid } from './Utils/Convertomermaid.js';
 import { uploadLocalFile } from './Utils/Audiourl.js';
 
-// Get __dirname in ES module
+ 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
