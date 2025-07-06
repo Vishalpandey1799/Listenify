@@ -80,7 +80,7 @@ export const useAudioStore = create((set, get) => ({
 
         return {
           success : false,
-          data : error?.response?.data?.message
+          data : e?.response?.data?.message
         }
     }
   },
