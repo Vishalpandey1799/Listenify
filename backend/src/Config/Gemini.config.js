@@ -75,17 +75,51 @@ ${prompt}
 
   } else if(ans){
       
-finalPrompt = `Here is the questions: ${prompt} in ${language}. You are an assistant for Listenify, an app that simplifies messy or complex content into clear and easy-to-understand language.
+    finalPrompt = `Here is the questions: ${prompt} in ${language}. You are an assistant for Listenify, an app that simplifies messy or complex content into clear and easy-to-understand language.
 
 Your task:
+1. Write answer according to the marks for 10 in 500 words for 5 for 200 words and for diagram , draw , scatch like visual representation give only diagram or scatch no any text explanation even is question is asking for it or draw  no bold , no formating , no new lines, no headers, no question numbers, no marks, no technical jargon, no unnecessary complexity, no long-winded sentences.
+2. Clean up any leftover HTML tags, hex codes (like &#x27;, &nbsp;), or symbols.
+3. return clean and plain text 
+4. If the question contains keywords like draw, sketch, diagram, architecture, layers, structure, flow etc., return a Mermaid.js diagram using only valid Mermaid syntax.
 
-1. Write answers according to the marks: for 10 marks use 500 words, for 5 marks use 200 words.
-2. If the question includes words like **draw**, **diagram**, **sketch**, **flow**, **structure**, **architecture**, **layers**, **layout**, or **representation**, then you MUST return ONLY a **Mermaid.js diagram** using valid Mermaid syntax. DO NOT return any explanation, description, headers, or additional text — ONLY the Mermaid diagram. This is non-negotiable.
-3. Never mix text with diagrams. If a diagram is required, return the diagram ONLY.
-4. Do NOT include bold, formatting, new lines, headers, question numbers, marks, technical jargon, or long-winded sentences.
-5. Clean up any leftover HTML tags, hex codes (like &#x27;, &nbsp;), or symbols.
-6. Return everything as plain text.
-7. Wrap the final result inside the following structure:
+Use this syntax format:
+
+flowchart TD
+  subgraph subGraph0["Application Layer"]
+    UA["User Apps (Your Apps, 3rd Party Apps)"]
+    SYSAPP["System Apps (Home, Contacts, Phone, Browser)"]
+  end
+  subgraph subGraph1["Framework Layer"]
+    JAF["Java API Framework (Activity Manager, View System, Resource Manager, etc.)"]
+  end
+  subgraph subGraph2["Android Native Layer"]
+    AR["Android Runtime (ART, Core Java Libraries)"]
+    NL["Native C/C++ Libraries (OpenGL ES, SQLite, Media Framework, Surface Manager, etc.)"]
+  end
+  subgraph subGraph3["Kernel Layer"]
+    LK["Linux Kernel (Memory Management, Process Management, Networking, Driver Model)"]
+  end
+  subgraph subGraph4["Hardware Layer"]
+    HAL["Hardware Abstraction Layer (Camera HAL, Audio HAL, GPS HAL, etc.)"]
+    HW["Hardware (CPU, Memory, Sensors, Display, Camera)"]
+  end
+
+  UA --> JAF
+  SYSAPP --> JAF
+  JAF --> AR
+  JAF --> NL
+  AR --> LK
+  NL --> LK
+  LK --> HAL
+  HAL --> HW
+
+- Do **not** nest subgraph names inside quotes.
+- Do **not** use nested square brackets or double brackets like ["["Label"]"].
+- Do **not** return anything other than clean Mermaid.js code for such answers.
+
+
+5. wrap all things inside the given structure like this
 
 [
   {
@@ -98,24 +132,10 @@ Your task:
   }
 ]
 
-Use this Mermaid syntax style:
-
-flowchart TD
-  subgraph subGraph0["Application Layer"]
-    UA["User Apps (Your Apps, 3rd Party Apps)"]
-    SYSAPP["System Apps (Home, Contacts, Phone, Browser)"]
-  end
-  ...
-
-Strict rules for diagrams:
-- Do NOT nest subgraph names in quotes.
-- Do NOT use nested brackets like ["["..."]"].
-- Do NOT return anything other than clean Mermaid.js code for diagram questions.
-
-Now process the following content:
+now process the following content:
 ${prompt}
+  
 `
-
   }else {
     finalPrompt = `You have this: ${prompt}, and the language is ${language}. You are an assistant for Listenify, an app that simplifies messy or complex content into clear and easy-to-understand language.
 
