@@ -10,6 +10,7 @@ import authRoutes from "./Routes/Auth.routes.js"
 import audioRoutes from "./Routes/Audio.routes.js"
 import talwithAiRoutes from "./Routes/TalkAi.routes.js"
 import coupenClaimRoutes from "./Routes/Coupen.routes.js"
+import connectionRequest from "./Routes/Connection.routes.js"
 
 
 app.use(express.json())
@@ -24,6 +25,7 @@ app.use("/api/listenify/auth" , authRoutes)
 app.use("/api/listenify/create" , audioRoutes)
 app.use("/api/listenify/talkwithai" ,talwithAiRoutes)
 app.use("/api/listenify/claim" ,coupenClaimRoutes)
+app.use("/api/listenify/connection" ,connectionRequest)
 const PORT =  5000;
 
  

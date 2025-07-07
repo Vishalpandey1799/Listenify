@@ -54,7 +54,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { identifier, pass } = req.body;
-    console.log(identifier, pass);
+     
 
     if (!identifier || !pass) {
       return errorThrow(res, 400, "Please enter email/username and password");
