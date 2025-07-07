@@ -246,7 +246,7 @@ export const generatePdf = async (questions = []) => {
     page.setDefaultTimeout(60000);
 
     const mapped = questions.map((item) => {
-      if (item?.answer.includes("subgraph")) {
+      if (item?.answer.includes("subgraph" || "flowchart" || "flowchart TD")) {
         item.answer = flattenGeminiMermaid(item.answer);
       }
       return item;
