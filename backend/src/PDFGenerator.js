@@ -245,12 +245,17 @@ export const generatePdf = async (questions = []) => {
     page.setDefaultNavigationTimeout(60000);
     page.setDefaultTimeout(60000);
 
-    const mapped = questions.map((item) => {
-      if (item?.answer.includes("subgraph" || "flowchart" || "flowchart TD")) {
-        item.answer = flattenGeminiMermaid(item.answer);
-      }
-      return item;
-    });
+const mapped = questions.map((item) => {
+  if (
+    item?.answer.includes("subgraph") ||
+    item?.answer.includes("flowchart") ||
+    item?.answer.includes("flowchart TD")
+  ) {
+    item.answer = flattenGeminiMermaid(item.answer);
+  }
+  return item;
+});
+
 
     const htmlContent = generateHTML(mapped);
     await page.setContent(htmlContent, {
