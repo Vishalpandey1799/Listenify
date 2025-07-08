@@ -41,6 +41,21 @@ const userSchema = new mongoose.Schema(
   default: false,
 },
 
+bio : {
+    type : String,
+    default : "Hey What Is Up"
+},
+
+nativeLangues : {
+  type : [String],
+  default : []
+},
+
+learningLanguages : {
+  type : [String],
+  default : []
+}
+
    
   },
   {
