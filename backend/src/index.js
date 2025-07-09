@@ -16,7 +16,7 @@ import connectionRequest from "./Routes/Connection.routes.js"
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin : "https://listenify-phi.vercel.app",
+    origin : "http://localhost:5173",
     credentials : true
 }))
 
