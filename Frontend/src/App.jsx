@@ -22,6 +22,8 @@ import { useCoupenStore } from "./Apicalls/coupen.api.js";
 import VoiceInterface from "./component/TalkWithAI/VoiceInterface.jsx";
 
 import FileUploader from "./Pages/PDF_Generator/FileUploader.jsx";
+import Sidebar from "./Pages/Chat/Sidebar/Sidebar.jsx";
+import ChatfullCompo from "./Pages/ChatFull/ChatfullCompo.jsx";
 
 const App = () => {
   const { isAuthenticated, loading, checkingAuth } = useAuthStore();
@@ -85,6 +87,12 @@ const App = () => {
           path="/gen-pdf"
           element={
             isAuthenticated ? <FileUploader /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            isAuthenticated ? <ChatfullCompo /> : <Navigate to="/login" />
           }
         />
 

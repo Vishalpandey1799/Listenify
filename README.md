@@ -1,9 +1,54 @@
-# Listenify
+ 
 
-| Action               | API Endpoint                        | Why it's separate             |
-| -------------------- | ----------------------------------- | ----------------------------- |
-| Send Request         | `POST /friend-request/:id`          | Clearly sending a new request |
-| Cancel Request       | `DELETE /friend-request/:id/cancel` | Only sender can do this       |
-| Reject Request       | `DELETE /friend-request/:id/reject` | Only receiver can do this     |
-| Accept Request       | `POST /friend-request/:id/accept`   | Only receiver can do this     |
-| Get Pending Requests | `GET /friend-request/pending`       | Separate for UI efficiency    |
+```
+┌──────────────────────┐
+│       User Input     │
+│    (URL Submission)  │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│   Backend (Express)  │
+│  - /api/generate     │
+│  - /download/:file   │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│   Puppeteer          │
+│  - page.screenshot() │
+│  - page.pdf()        │
+│  - screen-recorder   │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│   Output Files       │
+│  - screenshot.png    │
+│  - document.pdf      │
+│  - recording.mp4     │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│   User Download      │
+│  (Express serves)    │
+└──────────────────────┘
+```
+
+### Tools Mapped to Steps:
+1. **User Input** → HTML form (no tool, pure frontend)  
+2. **Backend** → `Express.js` (routes + file serving)  
+3. **Puppeteer** →  
+   - Screenshot: `page.screenshot()`  
+   - PDF: `page.pdf()`  
+   - Video: `puppeteer-screen-recorder` (requires `ffmpeg`)  
+4. **Output** → Local filesystem or S3 (not shown for minimalism)  
+5. **Download** → Express `res.download()`  
+
+### Why This Works:
+- **Zero extra tools** – Just Puppeteer + Express.  
+- **Video optional** – Remove `screen-recorder`/`ffmpeg` if unneeded.  
+- **Stateless** – No database required (files deleted after download).  
+
+ 

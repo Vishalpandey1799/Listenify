@@ -54,10 +54,22 @@ nativeLangues : {
 learningLanguages : {
   type : [String],
   default : []
-}
+},
+
+goal : {
+    type : [String],
+    default : ["Casual Conversation"]
+},
+
+ completed : {
+    type : Boolean,
+    default : false
+ }
 
    
   },
+
+  
   {
     timestamps: true,
   }
