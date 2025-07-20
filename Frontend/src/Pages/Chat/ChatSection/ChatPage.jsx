@@ -13,7 +13,7 @@ import { connecttoSokketayyo } from "../../../utils/Socket.io.client.js";
 import { useAuthStore } from "../../../Apicalls/Auth.api.js";
 import { useConnectionStore } from "../../../Apicalls/ConnectionRequest.js";
 import AudioCall from "../../../component/AudioCall.jsx";
- 
+
 import { format } from "timeago.js";
 import NotFoundPage from "../../NofoundPage/NotFoundPage.jsx";
 
@@ -152,7 +152,7 @@ const ChatPage = () => {
     getChats();
     myFriends();
   }, [toUserId, myFriends]);
- 
+
   useEffect(() => {
     if (!myId || !toUserId || socketRef.current) return;
 

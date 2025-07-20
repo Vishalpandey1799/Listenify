@@ -7,12 +7,15 @@ const onlineUsers = new Map();
 const activeCalls = new Map();  
 
 export const initializeSocket = (httpServer) => {
-  let io = new Server(httpServer, {
-    cors: {
-      origin: "https://listenify-phi.vercel.app",
-      credentials: true,
-    },
-  });
+ const io = new Server(httpServer, {
+  path: "/api/listenify", 
+  cors: {
+    origin: "https://listenify-phi.vercel.app",
+    credentials: true,
+  },
+});
+
+  
 
   io.on("connection", (socket) => {
     console.log("⚡️ Client connected:", socket.id);
