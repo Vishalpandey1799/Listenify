@@ -1,9 +1,11 @@
 import {io} from "socket.io-client";
 
 
-export const connecttoSokketayyo = () =>{
-    let ayyo = io("https://listenify-cmi7.onrender.com/api/listenify" ,{
-        withCredentials : true
-    });
-    return ayyo;
-}
+export const connecttoSokketayyo = () => {
+  const ayyo = io("https://listenify-cmi7.onrender.com", {
+    path: "/api/listenify", // ← this is where your server listens
+    withCredentials: true,
+    transports: ["websocket", "polling"], // fallback to polling if needed
+  });
+  return ayyo;
+};
