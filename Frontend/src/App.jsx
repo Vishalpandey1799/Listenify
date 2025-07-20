@@ -31,7 +31,7 @@ import Maincomp from "./component/Maincomp/Maincomp.jsx";
 import ConnectionsPage from "./Pages/Friends/ConnectionsPage.jsx";
 import ToolsPage from "./Pages/Aitools/ToolsPage.jsx";
 import ChatPage from "./Pages/Chat/ChatSection/ChatPage.jsx";
-import AudioCall from "./component/Audiocall.jsx";
+ 
 
 const App = () => {
   const { isAuthenticated, loading, checkingAuth, user } = useAuthStore();
