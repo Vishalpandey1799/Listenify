@@ -54,38 +54,6 @@ const Navbar = () => {
           </motion.div>
 
           <div className="hidden md:flex items-center space-x-6 relative">
-            <div className="relative inline-block">
-              <button className="bg-black text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all">
-                <Link to="/gen-pdf">Assignment</Link>
-              </button>
-              <span className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shadow-md">
-                New
-              </span>
-            </div>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.03 }}
-              className="flex items-center gap-2  mt-1 px-4 py-2 rounded-2xl text-green-400  hover:bg-gray-800 transition-all duration-200"
-            >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-
-              <Mic className="w-4 h-4" />
-
-              <Link to="/live-talk" className="text-sm font-mono">
-                Live Talk
-              </Link>
-            </motion.button>
-
-            <motion.button
-              className="text-gray-300 hover:text-cyan-400 transition-colors font-medium text-sm"
-              whileHover={{ y: -2 }}
-            >
-              <Link to="/about">About </Link>
-            </motion.button>
-
             {!user ? (
               <motion.button
                 className="px-4 py-1.5 text-cyan-400 border border-cyan-400/30 rounded-lg hover:bg-cyan-400/10 hover:border-cyan-400 transition-all font-medium text-sm"
@@ -100,12 +68,17 @@ const Navbar = () => {
             ) : (
               <div className="relative flex items-center gap-4">
                 <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-300">Welcome,</span>
+                    <span className="text-white font-medium">{user.name}</span>
+                  </div>
                   <img
                     src={user.userImage}
                     alt="user"
                     className="h-8 w-8 rounded-full cursor-pointer border border-cyan-400"
                     onClick={() => setShowDropdown(!showDropdown)}
                   />
+
                   {showDropdown && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -113,12 +86,6 @@ const Navbar = () => {
                       exit={{ opacity: 0 }}
                       className="absolute right-0 top-full mt-2 w-40 bg-gray-800 text-gray-200 border border-gray-700 rounded-lg shadow-md py-2 z-50"
                     >
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 hover:bg-gray-700 text-sm"
-                      >
-                        Profile
-                      </Link>
                       <button
                         onClick={() => logout()}
                         className="w-full text-left px-4 py-2 hover:bg-gray-700 text-sm"
@@ -127,13 +94,6 @@ const Navbar = () => {
                       </button>
                     </motion.div>
                   )}
-                </div>
-
-                <div className="flex items-center gap-2 bg-gray-800/50 px-3 py-1 rounded-full border border-gray-700">
-                  <Headphones className="w-5 h-5 text-cyan-400" />
-                  <span className="font-medium text-cyan-100">
-                    {user?.audioCredits || 0}
-                  </span>
                 </div>
               </div>
             )}
@@ -157,47 +117,12 @@ const Navbar = () => {
           transition={{ duration: 0.3 }}
         >
           <div className="px-2 pt-2 pb-3 space-y-2 bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg mt-2 border border-gray-700">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.03 }}
-              className="flex items-center gap-2  mt-2 px-4 py-2 rounded-2xl text-green-400  hover:bg-gray-800 transition-all duration-200"
-            >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-
-              <Mic className="w-4 h-4" />
-
-              <span className="font-medium">
-                <Link to="/live-talk">Live Talk</Link>
-              </span>
-            </motion.button>
-
-            <div className="relative inline-block">
-              <button className="bg-black text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all">
-                <Link to="/gen-pdf">Assignment</Link>
-              </button>
-              <span className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shadow-md">
-                New
-              </span>
-            </div>
-
-            <a
-              href="/about"
-              className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors text-sm"
-            >
-              About
-            </a>
             {!user ? (
               <button className="w-full text-left px-3 py-2 text-cyan-400 border border-cyan-400/30 rounded-md mt-1 hover:bg-cyan-400/10 transition-colors text-sm">
                 <Link to="/signup">Join Now</Link>
               </button>
             ) : (
               <>
-                <button className="w-full text-left px-3 py-2 text-cyan-400 border border-fuchsia-400/30 rounded-md mt-1 hover:bg-cyan-400/10 transition-colors text-sm">
-                  <Link to="/profile">Profile</Link>
-                </button>
                 <button
                   className="w-full text-left px-3 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-md mt-1 text-sm"
                   onClick={() => logout()}

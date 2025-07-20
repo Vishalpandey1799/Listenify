@@ -18,7 +18,7 @@ let coupenInstance = axios.create({
             
             let res = await coupenInstance.post("/coupen" , {coupencode})
             set({isClaimed : true})
-            console.log(res)
+       
 
             return {
                 success : true,

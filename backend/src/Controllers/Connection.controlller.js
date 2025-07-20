@@ -21,34 +21,30 @@ export const sendFriendRequest = async (req, res) => {
 
         const isExists = await UserModel.findById(userId);
 
+
         if(!isExists){
             return errorThrow(res,404,"User not found");
         }
 
 
-         // aese bhi kar sakte haii 
-        // if(userId === req.user._id.toString()){
-        //     return errorThrow(res,400,"You can't send connection request to yourself");
-        // }
+        if(!isExists.completed){
+            return errorThrow(res,400,"Onboarding Missed");
+        }
 
-        // but prototype se khel lete hai
-
-        /* 
-         Ruk samjhata hu equals kaise work karta hai under the hood 
-
-         ObjectId.prototype.equals = function (other) {
-  return this.toString() === other.toString();
-} 
-
-   Basically ye kar wahi raha hai jo hum upar kr rhe haii but thoda cool bn gya haii mongo
         
-        */
 
         if(req.user?._id.equals(userId)){
             return errorThrow(res,400,"You can't send connection request to yourself");
         }
 
-        // Darashal jinaab check kar raha hu vica versa 
+
+        let checkIfFriends = isExists.friends.some((id) => id._id.equals(req.user._id));
+
+        if(checkIfFriends){
+          return errorThrow(res,200,"Already friends");
+        }
+
+      
         const checkIfrequested = await connectionRequest.findOne({
             $or: [
                 {fromUserId: req.user._id, toUserId: userId},
@@ -67,7 +63,9 @@ export const sendFriendRequest = async (req, res) => {
             toUserId : userId,
             status : "pending"
         })
-
+         
+        isExists.status = "pending";
+        isExists.save();
         return successThrow(res , 200 , "Request sent" , request)
     } catch (error) {
         console.log(error);
@@ -115,6 +113,39 @@ export const cancelFriendRequest = async(req,res) => {
     }
 }
 
+
+export const rejectFriendRequest = async(req,res) =>{
+  try {
+    if(!req.user){
+        return errorThrow(res , 401 , "Unauthorized")
+    }
+
+    const userId = req.params?.id;
+
+    if(!userId){
+        return errorThrow(res,400,"id is required for accepting request");
+    }
+
+    const Exists = await UserModel.findById(userId);
+
+    if(!Exists){
+        return errorThrow(res,404,"User not found");
+    }
+
+    const checkIfAccepted = await connectionRequest.findOne({fromUserId : userId , toUserId : req.user._id , status : "pending"});
+
+    if(!checkIfAccepted){
+        return errorThrow(res,400,"Request not found");
+    }
+
+    await connectionRequest.findOneAndDelete({fromUserId : userId , toUserId : req.user._id , status : "pending"});
+
+    return successThrow(res , 200 , "Request rejected")
+  } catch (error) {
+     console.log(error?.message);
+  }
+}
+
 // accept friend request
 export const acceptFriendRequest = async(req,res) =>{
     try {
@@ -133,6 +164,9 @@ export const acceptFriendRequest = async(req,res) =>{
         if(!Exists){
             return errorThrow(res,404,"User not found");
         }
+        if(!Exists.completed){
+            return errorThrow(res,404,"Onboarding Missed");
+        }
 
         const checkIfAccepted = await connectionRequest.findOne({fromUserId : userId , toUserId : req.user._id , status : "accepted"});
 
@@ -147,14 +181,34 @@ export const acceptFriendRequest = async(req,res) =>{
         }
        
 
-//        let accepted = await connectionRequest.findOneAndUpdate(
-//   { fromUserId: userId, toUserId: req.user._id, status: "accepted" },
-   
-//   { new: true }  
-// );
+ 
 
    checkIfrequested.status = "accepted";
    const accepted = await checkIfrequested.save();
+
+     
+    await Promise.all([
+      UserModel.updateOne(
+        { _id: req.user._id },
+        { $addToSet: { friends: userId } }
+      ),
+      UserModel.updateOne(
+        { _id: userId },
+        { $addToSet: { friends: req.user._id } }
+      ),
+    ]);
+
+    // so we are updating both user 
+    await Promise.all([
+      UserModel.updateOne(
+        { _id: req.user._id },
+        {status : "accepted" }
+      ),
+      UserModel.updateOne(
+        { _id: userId },
+        { status : "accepted" }
+      ),
+    ]);
 
    return successThrow(res , 200 , "Request accepted" , accepted)
 
@@ -165,90 +219,219 @@ export const acceptFriendRequest = async(req,res) =>{
     }
 }
 
-// unfriend after friend
-export const unfriend = async(req,res) => {
-    try {
-        if(!req.user){
-            return errorThrow(res , 401 , "Unauthorized")
-        }
-
-        const userId = req.params?.id;
-
-        if(!userId){
-            return errorThrow(res,400,"id is required for accepting request");
-        }
-
-        const Exists = await UserModel.findById(userId);
-
-        if(!Exists){
-            return errorThrow(res,404,"User not found");
-        }
-
-       const checkIfAccepted = await connectionRequest.findOne({
-  $or: [
-    { fromUserId: userId, toUserId: req.user._id },
-    { fromUserId: req.user._id, toUserId: userId }
-  ],
-  status: "accepted"
-});
  
-
- 
-if (!checkIfAccepted) {
-  return errorThrow(res, 400, "Friendship not found");
-}
-
-        await connectionRequest.findOneAndDelete(checkIfAccepted._id);
-
-        return successThrow(res , 200 , "unfriended")
-
-
-    } catch (error) {
-        console.log(error?.message);
-        return errorThrow(res,500,"Please try again !")
+export const unfriend = async (req, res) => {
+  try {
+    if (!req.user) {
+      return errorThrow(res, 401, "Unauthorized");
     }
 
-}
+    const userId = req.params?.id;
+    if (!userId) {
+      return errorThrow(res, 400, "id is required");
+    }
 
-export const getPendingRequest = async(req,res) =>{
-    try {
-        if(!req.user){
-            return errorThrow(res , 401 , "Unauthorized")
-        }
+    
+    const otherUser = await UserModel.findById(userId).lean();
+    if (!otherUser) {
+      return errorThrow(res, 404, "User not found");
+    }
+
+    
+    const friendship = await connectionRequest.findOne({
+      $or: [
+        { fromUserId: userId,    toUserId: req.user._id },
+        { fromUserId: req.user._id, toUserId: userId }
+      ],
+      status: "accepted"
+    });
+
+    if (!friendship) {
+      return errorThrow(res, 400, "Friendship not found");
+    }
+ 
+
+   
+    await connectionRequest.findOneAndDelete({ _id: friendship._id });
+
+    
+    await Promise.all([
+      UserModel.updateOne(
+        { _id: req.user._id },
+        { $pull: { friends: userId } }
+      ),
+      UserModel.updateOne(
+        { _id: userId },
+        { $pull: { friends: req.user._id } }
+      )
+    ]);
+    await Promise.all([
+      UserModel.updateOne(
+        { _id: req.user._id },
+        { status : "none" }
+      ),
+      UserModel.updateOne(
+        { _id: userId },
+        { status: "none" }
+      )
+    ]);
+
+    return successThrow(res, 200, "Unfriended");
+  } catch (error) {
+    console.error(error?.message);
+    return errorThrow(res, 500, "Please try again!");
+  }
+};
 
 
-        const pendingRequest = await connectionRequest.find({toUserId : req.user._id , status : "pending"}); 
+export const getPendingRequest = async (req, res) => {
+  try {
+    if (!req.user) {
+      return errorThrow(res, 401, "Unauthorized");
+    }
 
-        if(!pendingRequest.length){
-            return errorThrow(res,400,"No Pending request!");
-        }
+    const pendingRequest = await connectionRequest
+      .find({ toUserId: req.user._id, status: "pending" })
+      .populate({
+        path: "fromUserId",
+        select: "name userImage email",  
+      })
+      .lean();
+
+
+     console.log(pendingRequest);
+
+    if (!pendingRequest.length) {
+      return errorThrow(res, 400, "No pending requests!");
+    }
+
+    let clearData = pendingRequest.map((item) => {
+      return {
+     
+        fromUserId: item.fromUserId,
+      };
+    });
+
+    return successThrow(res, 200, "Pending request", clearData);
+  } catch (error) {
+    console.log(error);
+    return errorThrow(res, 500, "Please try again!");
+  }
+};
+
+
+export const getFriends = async (req, res) => {
+  try {
+    if (!req.user) {
+      return errorThrow(res, 401, "Unauthorized");
+    }
+ 
+    const user = await UserModel
+      .findById(req.user._id)
+      .select("friends")                       
+      .populate({
+        path: "friends",
+        select: "name userImage email nativeLanguages programmingLanguages learningType", 
+      })
+      .lean();  
+
+    if (!user || !user.friends?.length) {
+      return errorThrow(res, 400, "No friends found");
+    }
+   
+    
+    return successThrow(res, 200, "Fetched Friends", user.friends);
+  } catch (error) {
+    console.log(error?.message);
+    return errorThrow(res, 500, "Please try again later!");
+  }
+};
+
+
+// export const getAllusers = async (req, res) => {
+//   if (!req.user) {
+//     return errorThrow(res, 401, "Unauthorized");
+//   }
+
+//   try {
+//     const currentUserId = req.user._id;
+ 
+//     const currentUser = await UserModel.findById(currentUserId).select("friends").lean();
+//     const friendsList = currentUser?.friends?.map(id => id.toString()) || [];
+
+ 
+//     const allUsers = await UserModel.find({
+//       completed: true,
+//       _id: { $ne: currentUserId, $nin: friendsList },
+//     })
+//       .select("name userImage email nativeLanguages programmingLanguages status")
+//       .lean();
+
+//     if (!allUsers.length) {
+//       return errorThrow(res, 400, "No users found");
+//     }
+
+//     return successThrow(res, 200, "Fetched all users", allUsers);
+//   } catch (e) {
+//     console.error("GetAllUsers error:", e);
+//     return errorThrow(res, 500, "Server error");
+//   }
+// };
+
+
+export const getAllUsers = async (req, res) => {
+  if (!req.user) {
+    return errorThrow(res, 401, "Unauthorized");
+  }
+
+  try {
+    const currentUserId = req.user._id;
+
+    // 1. Get current user's friends list
+    const currentUser = await UserModel.findById(currentUserId)
+      .select("friends")
+      .lean();
+    const friendsList = currentUser?.friends?.map(id => id.toString()) || [];
+
+    
+    const allUsers = await UserModel.find({
+      completed: true,
+      _id: { $ne: currentUserId, $nin: friendsList },
+    })
+      .select("name userImage email nativeLanguages programmingLanguages learningType ")
+      .lean();
+
+    if (!allUsers.length) {
+      return errorThrow(res, 400, "No users found");
+    }
+
+    
+    const usersWithConnectionStatus = await Promise.all(
+      allUsers.map(async (user) => {
+        const connection = await connectionRequest.findOne({
+          $or: [
+            { fromUserId: currentUserId, toUserId: user._id },
+            { fromUserId: user._id, toUserId: currentUserId },
+          ],
+        });
+
+        return {
+          ...user,
+          connectionStatus: connection ? connection.status : null,
          
+       
+        };
+      })
+    );
 
-        return successThrow(res , 200 , "Pending request" , pendingRequest)
-
-    } catch (error) {
-        console.log(error)
-        return errorThrow(res,500,"Please try again !")
-    }
-}
-
-export const getAcceptedRequest = async(req,res) =>{ 
-    try {
-        if(!req.user){
-            return errorThrow(res , 401 , "Unauthorized")
-        }
-        
-
-        let acceptedRequest = await connectionRequest.find({toUserId : req.user._id , status : "accepted"});
-
-        if(!acceptedRequest.length){
-            return errorThrow(res,400,"No accepted request!");
-        }
-
-        return successThrow(res , 200 , "Accepted request" , acceptedRequest)
-    }catch(error){
-           console.log(error?.message)
-           return errorThrow(res,500,"Please try again later!")
-        }
-
-    }
+    return successThrow(
+      res,
+      200,
+      "Fetched all users",
+      usersWithConnectionStatus
+    );
+  } catch (e) {
+    console.error("GetAllUsers error:", e);
+    return errorThrow(res, 500, "Server error");
+  }
+};

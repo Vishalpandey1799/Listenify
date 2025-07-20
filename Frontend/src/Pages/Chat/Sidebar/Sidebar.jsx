@@ -83,16 +83,9 @@ const Sidebar = () => {
         );
 
   return (
-    <aside className="fixed top-0 left-28 h-[calc(100vh-8rem)] w-72 bg-gray-900 text-white p-4 z-40 shadow-xl flex flex-col">
+    <aside className="fixed top-0 left-75 h-[calc(100vh-8rem)] w-72 bg-gray-900 text-white p-4 z-40 shadow-xl flex flex-col">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-          Messages
-        </h1>
-        <button className="p-2 rounded-full hover:bg-gray-700 transition-all">
-          <Plus className="w-5 h-5" />
-        </button>
-      </div>
+      
 
       {/* Search */}
       <div className="relative mb-6 group">

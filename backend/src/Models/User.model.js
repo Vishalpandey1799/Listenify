@@ -1,15 +1,34 @@
 import mongoose from "mongoose";
 
+const nativeLanguageSchema = new mongoose.Schema({
+  language: {
+    type: String,
+    required: true,
+  },
+  level: {
+    type: String,
+    required: true,
+  }
+ 
+});
+
+const programmingLanguageSchema = new mongoose.Schema({
+  language: {
+    type: String,
+    required: true,
+  },
+  level: {
+    type: String,
+    required: true,
+  }
+ 
+});
+
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      trim: true,
-    },
+    name: { type: String, trim: true },
 
-    userImage: {
-      type: String,
-    },
+    userImage: { type: String },
 
     email: {
       type: String,
@@ -33,48 +52,67 @@ const userSchema = new mongoose.Schema(
     coupon: {
       type: String,
       default: "LISTENIFY-VISHAL",
-
     },
 
     couponClaimed: {
-  type: Boolean,
-  default: false,
-},
+      type: Boolean,
+      default: false,
+    },
 
-bio : {
-    type : String,
-    default : "Hey What Is Up"
-},
+    bio: {
+      type: String,
+      default: "Hey What Is Up",
+    },
 
-nativeLangues : {
-  type : [String],
-  default : []
-},
+    learningType: {
+      type: String,
+      enum: {
+        values: ["native", "coding"],
+        message: `{VALUE} is not a valid learning type`,
+      },
+    },
 
-learningLanguages : {
-  type : [String],
-  default : []
-},
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    pending: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
 
-goal : {
-    type : [String],
-    default : ["Casual Conversation"]
-},
+    nativeLanguages: {
+      type: [nativeLanguageSchema],
+      default: [],
+    },
 
- completed : {
-    type : Boolean,
-    default : false
- }
+    programmingLanguages: {
+      type: [programmingLanguageSchema],
+      default: [],
+    },
 
-   
+    goal: {
+      type: [String],
+      default: ["Casual Conversation"],
+    },
+
+    completed: {
+      type: Boolean,
+      default: false,
+    },
   },
-
-  
   {
     timestamps: true,
   }
 );
 
+ 
+userSchema.pre("validate", function (next) {
+  if (this.learningType === "native" && (!this.nativeLanguages || this.nativeLanguages.length === 0)) {
+    return next(new Error("nativeLanguages must be provided when learningType is 'native'"));
+  }
+
+  if (this.learningType === "coding" && (!this.programmingLanguages || this.programmingLanguages.length === 0)) {
+    return next(new Error("programmingLanguages must be provided when learningType is 'coding'"));
+  }
+
+  next();
+});
+ 
 userSchema.pre("save", function (next) {
   if (this.isNew) {
     if (!this.name) {

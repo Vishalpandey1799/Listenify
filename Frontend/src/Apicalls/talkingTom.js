@@ -12,7 +12,7 @@ export const useTalkingTom = create((set) => ({
           formdata.append("file" , blob)
             try {
                 let res = await talkingTomInstance.post("/audio" ,formdata );
-                console.log(res)
+              
 
                 set({currentAudio : res?.data?.data})
                 return {

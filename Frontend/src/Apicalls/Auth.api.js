@@ -75,6 +75,8 @@ export const useAuthStore = create((set,get) => ({
     profileUpdate : async(data) =>{
              
         try {
+
+            console.log(data)
             const res = await authInstance.patch("/update/profile" , data,{
                 headers : {
                     "Content-Type" : "multipart/form-data"
@@ -100,15 +102,13 @@ export const useAuthStore = create((set,get) => ({
     }
 },
     logout : async() =>{
+
+         
         try {
             const res = await authInstance.post("/logout")
             
             set({user : null , isAuthenticated : false})
- 
-            return {
-                success : true,
-                message : res?.data?.message
-            }
+  
 
         }catch(e){
             console.log(e)

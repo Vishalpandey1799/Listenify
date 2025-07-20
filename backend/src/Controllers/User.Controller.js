@@ -98,44 +98,131 @@ export const logout = async(req,res) =>{
     }
 }
 
-export const updateUser = async(req,res) =>{ 
-   try {
+// export const updateUser = async(req,res) =>{ 
+//    try {
 
-    if(!req.user){
-      return errorThrow(res , 401 , "Unauthorized")
-    }
-      const {name } = req.body;
-       if(!name){
-        return errorThrow(res,400,"Please enter name to update")
-       }
+//     if(!req.user){
+//       return errorThrow(res , 401 , "Unauthorized")
 
-       let userImage = null;
+//     }
 
-       if(req.file){
+//     console.log(req.body)
+//       const {name , learningType , nativeLanguages ,codingLanguages , goal } = req.body;
+//       //  if(!name){
+//       //   return errorThrow(res,400,"Please enter name to update")
+//       //  }
 
-        try {
-            const res = await uploadWithCloudinary(req.file.buffer);
-        userImage = res.secure_url;
-        } catch (error) {
-          console.log(error);
-          return errorThrow(res , 500 , "Failed to update user image")
-        }
+
+
+
+//       console.log(name,learningType,nativeLanguages,codingLanguages,goal)
+//        let userImage = null;
+
+//        if(req.file){
+
+//         try {
+//             const res = await uploadWithCloudinary(req.file.buffer);
+//         userImage = res.secure_url;
+//         } catch (error) {
+//           console.log(error);
+//           return errorThrow(res , 500 , "Failed to update user image")
+//         }
       
-       }
+//        }
 
-       let updateduser = await UserModel.findByIdAndUpdate(req.user._id , {
-         name : name ? name : req.user.name,
-         userImage : userImage ? userImage : req.user.userImage
-       },{
-        new : true
-       })
+//        let updateduser = await UserModel.findByIdAndUpdate(req.user._id , {
+//          name : name ? name : req.user.name,
+//          userImage : userImage ? userImage : req.user.userImage,
+//          learningType : learningType ? learningType : req.user.learningType,
+//          nativeLanguages : nativeLanguages ? nativeLanguages : req.user.nativeLanguages,
+//          programmingLanguages : codingLanguages ? codingLanguages : req.user.programmingLanguages,
+//          goal : goal ? goal : req.user.goal
+//        },{
+//         new : true
+//        })
 
-       return successThrow(res , 200 , "User updated successfully" , updateduser)
-   } catch (error) {
-    console.log(error)
-      return errorThrow(res , 500 , err.message)
-   }
-}
+//        return successThrow(res , 200 , "User updated successfully" , updateduser)
+//    } catch (error) {
+//     console.log(error)
+//       return errorThrow(res , 500 , error.message)
+//    }
+// }
+
+
+export const updateUser = async (req, res) => {
+  try {
+    if (!req.user) {
+      return errorThrow(res, 401, "Unauthorized");
+    }
+
+    const {
+      name,
+      learningType,
+      nativeLanguages,
+      programmingLanguages,
+      codingLanguages = programmingLanguages,
+      goal,
+    } = req.body;
+
+    console.log("Parsed fields:", {
+      name,
+      learningType,
+      nativeLanguages,
+      codingLanguages,
+      goal,
+    });
+
+    let userImage = null;
+
+    if (req.file) {
+      try {
+        const res = await uploadWithCloudinary(req.file.buffer);
+        userImage = res.secure_url;
+      } catch (error) {
+        console.log(error);
+        return errorThrow(res, 500, "Failed to update user image");
+      }
+    }
+
+    if (learningType && !["native", "coding"].includes(learningType)) {
+      return errorThrow(res, 400, "Invalid learning type");
+    }
+ 
+    const currentUser = await UserModel.findById(req.user._id);
+
+    const updateData = {
+      ...(name && { name }),
+      ...(userImage && { userImage }),
+      ...(learningType && { learningType }),
+      ...(nativeLanguages && { nativeLanguages }),
+      ...(codingLanguages && { programmingLanguages: codingLanguages }),
+      ...(goal && { goal }),
+    };
+
+   
+    const isProvidingRequiredFields =
+      (nativeLanguages && nativeLanguages.length > 0) ||
+      (codingLanguages && codingLanguages.length > 0);
+
+    if (isProvidingRequiredFields && !currentUser.completed) {
+      updateData.completed = true;
+    }
+
+   
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.user._id,
+      updateData,
+      { new: true }
+    );
+
+    return successThrow(res, 200, "User updated successfully", updatedUser);
+  } catch (error) {
+    console.log(error);
+    return errorThrow(res, 500, error.message);
+  }
+};
+
 
 
 export const checkingAuth = async(req,res) =>{
@@ -156,3 +243,7 @@ export const checkingAuth = async(req,res) =>{
     return errorThrow(res , 500 , error.message)
   }
 }
+
+
+
+ 

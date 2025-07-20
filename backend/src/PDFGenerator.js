@@ -227,7 +227,7 @@ const generateHTML = (mapped) => `
 </html>
 `;
 
-// Main PDF generation function
+ 
 export const generatePdf = async (questions = []) => {
   let browser;
 
