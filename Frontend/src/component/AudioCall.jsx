@@ -13,7 +13,7 @@ import { useAuthStore } from "../Apicalls/Auth.api";
 
 const apiKey = "wsvmwccdgb9z";
 
-export default function AudioCall({ toUserId, type, onEnd, isInitiator }) {
+ function AudioCall({ toUserId, type, onEnd, isInitiator }) {
   const { user } = useAuthStore();
   const [client, setClient] = useState(null);
   const [call, setCall] = useState(null);
@@ -31,7 +31,7 @@ export default function AudioCall({ toUserId, type, onEnd, isInitiator }) {
         await clientInstance.disconnectUser();
       }
     } catch (error) {
-      console.error('Cleanup error:', error);
+      console.error("Cleanup error:", error);
     }
   }, []);
 
@@ -86,9 +86,9 @@ export default function AudioCall({ toUserId, type, onEnd, isInitiator }) {
         }
 
         // Join call only once
-        const isAlreadyJoined = activeCall.state.members && 
-                                activeCall.state.members[userId];
-        
+        const isAlreadyJoined =
+          activeCall.state.members && activeCall.state.members[userId];
+
         if (!isAlreadyJoined) {
           await activeCall.join({ create: isInitiator });
         }
@@ -109,7 +109,7 @@ export default function AudioCall({ toUserId, type, onEnd, isInitiator }) {
           setIsJoining(false);
         }
       } catch (error) {
-        console.error('Call initialization error:', error);
+        console.error("Call initialization error:", error);
         if (isMounted) {
           setError(error.message);
           setIsJoining(false);
@@ -134,7 +134,9 @@ export default function AudioCall({ toUserId, type, onEnd, isInitiator }) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl max-w-sm w-full text-center">
-          <h3 className="text-xl font-semibold mb-4 text-red-500">Call Error</h3>
+          <h3 className="text-xl font-semibold mb-4 text-red-500">
+            Call Error
+          </h3>
           <p className="mb-4">{error}</p>
           <button
             onClick={handleCallEnd}
@@ -171,3 +173,5 @@ export default function AudioCall({ toUserId, type, onEnd, isInitiator }) {
     </div>
   );
 }
+
+export default AudioCall;

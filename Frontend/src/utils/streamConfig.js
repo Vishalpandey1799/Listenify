@@ -2,9 +2,11 @@ import { StreamVideoClient } from '@stream-io/video-react-sdk';
 
 const apiKey = 'svmwccdgb9z';
 
+let baseurl = import.meta.SERVER_URL || "http://localhost:5000/api/listenify/";
+
 export const createStreamClient = async (userId) => {
   console.log(userId)
-  const res = await fetch(`http://localhost:5000/api/listenify/token/${userId}`, {
+  const res = await fetch(`${baseurl}token${userId}`, {
     
     credentials: 'include', // if cookies are used
   });

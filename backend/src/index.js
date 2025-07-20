@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://listenify-phi.vercel.app",
     credentials: true,
 }));
 
@@ -49,7 +49,7 @@ async function startServer() {
     try {
         await connectDB();
         server.listen(PORT, () => {
-            console.log(`✅ Server started on http://localhost:${PORT}`);
+            console.log(`✅ Server started on`);
         });
     } catch (error) {
         console.error("❌ Failed to start server:", error);
