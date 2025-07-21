@@ -12,6 +12,7 @@ export const initializeSocket = (httpServer) => {
   cors: {
     origin: "https://listenify-phi.vercel.app",
     credentials: true,
+    methods : ["GET", "POST"]
   },
 });
 
