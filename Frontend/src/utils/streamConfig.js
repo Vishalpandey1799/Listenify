@@ -2,7 +2,7 @@ import { StreamVideoClient } from '@stream-io/video-react-sdk';
 
 const apiKey = 'svmwccdgb9z';
 
-let baseurl = import.meta.SERVER_URL || "http://localhost:5000/api/listenify/";
+let baseurl = import.meta.VITE_SERVER_URL || "http://localhost:5000/api/listenify/";
 
 export const createStreamClient = async (userId) => {
   console.log(userId)

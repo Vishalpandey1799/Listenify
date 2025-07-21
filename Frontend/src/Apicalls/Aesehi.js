@@ -1,9 +1,11 @@
 import axios from "axios";
 
+let baseURL = import.meta.VITE_SERVER_URL || "http://localhost:5000/api/listenify/token"
+
 export const fetchToken = async () => {
   try {
     const res = await axios.post(
-      "http://localhost:5000/api/listenify/token",
+      `${baseURL}api/listenify/token`,
       {},                        
       { withCredentials: true }  
     );
