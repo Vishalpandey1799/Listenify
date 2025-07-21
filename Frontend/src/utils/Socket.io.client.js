@@ -5,7 +5,7 @@ export const connecttoSokketayyo = () => {
   const ayyo = io("https://listenify-cmi7.onrender.com", {
     path: "/api/listenify/",
     withCredentials: true,
-    transports: ["websocket", "polling"], // fallback to polling if needed
+    transports: ["websocket", "polling"],  
   });
   return ayyo;
 };
