@@ -39,17 +39,17 @@ app.use("/api/listenify/connection", connectionRequest);
 app.use("/api/listenify/user", chatRoutes);
 app.use("/api/listenify/", getToken);
 
-// Create HTTP + WebSocket server
+ 
 const server = createServer(app);
-// Optional: Attach io to app if needed in routes or controllers
+ 
  initializeSocket(server);
 
-// Connect DB and start server
+ 
 async function startServer() {
     try {
         await connectDB();
         server.listen(PORT, () => {
-            console.log(`✅ Server started on`);
+            console.log(`✅ Server started on ${PORT}`);
         });
     } catch (error) {
         console.error("❌ Failed to start server:", error);

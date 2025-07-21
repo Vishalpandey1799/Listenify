@@ -8,7 +8,7 @@ const activeCalls = new Map();
 
 export const initializeSocket = (httpServer) => {
  const io = new Server(httpServer, {
-  path: "/api/listenify", 
+  
   cors: {
     origin: "https://listenify-phi.vercel.app",
     credentials: true,

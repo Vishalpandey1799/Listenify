@@ -76,7 +76,7 @@ const apiKey = "wsvmwccdgb9z";
           return;
         }
 
-        // Create consistent call ID
+        
         const callId = [userId, toUserId].sort().join("_");
         activeCall = clientInstance.call("default", callId);
 
