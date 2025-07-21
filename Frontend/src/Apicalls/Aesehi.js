@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseURL = import.meta.VITE_SERVER_URL || "http://localhost:5000/api/listenify/token"
+let baseURL = "https://listenify-cmi7.onrender.com/"
 
 export const fetchToken = async () => {
   try {
