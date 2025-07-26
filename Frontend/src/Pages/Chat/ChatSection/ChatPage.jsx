@@ -132,7 +132,7 @@ const ChatPage = () => {
     const getChats = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/listenify/user/chat/${toUserId}`,
+          `https://listenify-cmi7.onrender.com/api/listenify/user/chat/${toUserId}`,
           { withCredentials: true }
         );
 
